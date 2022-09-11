@@ -1,6 +1,9 @@
 <?php
 
 use App\Http\Controllers\User\CheckoutController;
+use App\Http\Controllers\User\DashboardController as UserDashboard;
+use App\Http\Controllers\Admin\DashboardController as AdminDashboard;
+use App\Http\Controllers\Admin\CheckoutController as AdminCheckout;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\HomeController;
@@ -21,25 +24,48 @@ Route::get('/', function () {
 })->name('welcome');
 
 Route::middleware(['auth'])->group(function () {
-    //dashboard routes
     Route::get('dashboard', [HomeController::class, 'dashboard'])->name(
         'dashboard'
     );
 
+    Route::prefix('user/dashboard')
+        ->namespace('User')
+        ->name('user.')
+        ->middleware('ensureUserRole:user')
+        ->group(function () {
+            //dashboard user
+            Route::get('/', [UserDashboard::class, 'index'])->name('dashboard');
+        });
+
+    Route::prefix('admin/dashboard')
+        ->namespace('Admin')
+        ->name('admin.')
+        ->middleware('ensureUserRole:admin')
+        ->group(function () {
+            //dashboard admin
+            Route::get('/', [AdminDashboard::class, 'index'])->name(
+                'dashboard'
+            );
+
+            //admin checkout
+            Route::post('checkout/{checkout}', [
+                AdminCheckout::class,
+                'update',
+            ])->name('checkout.update');
+        });
+
     //checkout routes
-    Route::get('checkout/success', [
-        CheckoutController::class,
-        'success',
-    ])->name('checkout.success');
+    Route::get('checkout/success', [CheckoutController::class, 'success'])
+        ->name('checkout.success')
+        ->middleware('ensureUserRole:user');
 
-    Route::get('checkout/{camp:slug}', [
-        CheckoutController::class,
-        'create',
-    ])->name('checkout.create');
+    Route::get('checkout/{camp:slug}', [CheckoutController::class, 'create'])
+        ->name('checkout.create')
+        ->middleware('ensureUserRole:user');
 
-    Route::post('checkout/{camp}', [CheckoutController::class, 'store'])->name(
-        'checkout.store'
-    );
+    Route::post('checkout/{camp}', [CheckoutController::class, 'store'])
+        ->name('checkout.store')
+        ->middleware('ensureUserRole:user');
 });
 
 // Route::get('/dashboard', function () {
