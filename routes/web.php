@@ -23,6 +23,20 @@ Route::get('/', function () {
     return view('welcome');
 })->name('welcome');
 
+//socialite routes
+Route::get('sign-in-google', [UserController::class, 'google'])->name(
+    'user.login.google'
+);
+
+Route::get('auth/google/callback', [
+    UserController::class,
+    'handleProviderCallback',
+])->name('user.google.callback');
+
+//midtrans routes
+Route::get('payment/success', [CheckoutController::class, 'midtransCallback']);
+Route::post('payment/success', [CheckoutController::class, 'midtransCallback']);
+
 Route::middleware(['auth'])->group(function () {
     Route::get('dashboard', [HomeController::class, 'dashboard'])->name(
         'dashboard'
@@ -73,15 +87,5 @@ Route::middleware(['auth'])->group(function () {
 // })
 //     ->middleware(['auth'])
 //     ->name('dashboard');
-
-//socialite routes
-Route::get('sign-in-google', [UserController::class, 'google'])->name(
-    'user.login.google'
-);
-
-Route::get('auth/google/callback', [
-    UserController::class,
-    'handleProviderCallback',
-])->name('user.google.callback');
 
 require __DIR__ . '/auth.php';
