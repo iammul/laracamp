@@ -146,7 +146,7 @@ class CheckoutController extends Controller
         $checkout->midtrans_booking_code = $order_id;
 
         $transaction_details = [
-            'order_id' => $orderId,
+            'order_id' => $order_id,
             'gross_amount' => $price,
         ];
 
@@ -196,7 +196,10 @@ class CheckoutController extends Controller
     //Midtrans callback
     public function midtransCallback(Request $request)
     {
-        $notif = new Midtrans\Notification();
+        $notif =
+            $request->method() == 'POST'
+                ? new Midtrans\Notification()
+                : Midtrans\Transaction::status($request->order_id);
 
         $transaction_status = $notif->transaction_status;
         $fraud = $notif->fraud_status;
