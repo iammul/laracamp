@@ -32,15 +32,15 @@
                                 </p>
                             </td>
                             <td>
-                                <strong>{{ $item->Camp->price }}K</strong>
+                                <strong>${{ $item->Camp->price }}K</strong>
                             </td>
                             <td>
-                                @if ($item->is_paid)
-                                    <strong class="text-success">Success Payment</strong>
-                                @else
-                                    <strong>Waiting for Payment</strong>
+                                <strong>{{ $item->payment_status}}</strong>
+                            </td>
+                            <td>
+                                @if ($item->payment_status == 'waiting' )
+                                    <a href="{{ $item->midtrans_url}}" class="btn btn-primary">Pay Here</a>
                                 @endif
-
                             </td>
                             <td>
                                 <a href="https://wa.me/082158445894?text=Hi, saya ingin bertanya tentang kelas {{ $item->Camp->title }}" class="btn btn-primary">
@@ -50,7 +50,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5">No Data</td>
+                            <td colspan="5">No Camp Registered</td>
                         </tr>
                     @endforelse
                 </tbody>
