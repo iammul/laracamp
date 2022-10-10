@@ -187,7 +187,9 @@ class CheckoutController extends Controller
             $paymentUrl = \Midtrans\Snap::createTransaction($midtrans_params)
                 ->redirect_url;
             $checkout->midtrans_url = $paymentUrl;
-            $checkout->save;
+            $checkout->save();
+
+            return $paymentUrl;
         } catch (Exception $e) {
             return false;
         }
