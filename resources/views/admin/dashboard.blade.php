@@ -36,7 +36,7 @@
                                 {{ $item->Camp->title }}
                             </td>
                             <td>
-                                {{ $item->Camp->price }}
+                                {{ $item->Camp->price }}K
                             </td>
                             <td>
                                 {{ $item->created_at->format('M d, Y') }}
