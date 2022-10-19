@@ -36,7 +36,12 @@
                                 {{ $item->Camp->title }}
                             </td>
                             <td>
-                                {{ $item->Camp->price }}
+                                <strong>
+                                    Rp. {{ $item->total }}
+                                    @if ($item->discount_id)
+                                        <span class="badge bg-success">Disc {{ $item->discount_percentage }}%</span>
+                                    @endif
+                                </strong>
                             </td>
                             <td>
                                 {{ $item->created_at->format('M d, Y') }}
